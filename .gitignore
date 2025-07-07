@@ -1,0 +1,21 @@
+# Ignorar entorno virtual
+ambiente/
+*.pyc
+__pycache__/
+
+# Credenciales y tokens sensibles
+client_secret_*.json
+token.pickle
+
+# Archivos de configuración locales (opcional)
+*.env
+
+# Logs y archivos temporales
+*.log
+*.tmp
+*.temp
+
+# Archivos de sistema
+.DS_Store
+Thumbs.db
+
