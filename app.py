@@ -33,5 +33,19 @@ def webhook_calendar():
     last_check = now
     return '', 200
 
+@app.route('/webhook-dropbox', methods=['GET', 'POST'])
+def dropbox_webhook():
+    if request.method == 'GET':
+        # Verificación del webhook (challenge)
+        challenge = request.args.get('challenge')
+        return challenge, 200
+    elif request.method == 'POST':
+        # Notificación de cambios
+        data = request.get_json()
+        print(" Cambio recibido en Dropbox")
+        print("Usuarios afectados:", data.get('list_folder', {}).get('accounts'))
+        return '', 200
+
+
 if __name__ == '__main__':
     app.run(port=5000)
