@@ -1,7 +1,8 @@
-from flask import Flask, request
+from flask import Flask, jsonify, request
 import pickle
 from datetime import datetime, timedelta
 from googleapiclient.discovery import build
+import requests
 
 app = Flask(__name__)
 
@@ -45,7 +46,48 @@ def dropbox_webhook():
         print(" Cambio recibido en Dropbox")
         print("Usuarios afectados:", data.get('list_folder', {}).get('accounts'))
         return '', 200
+#endpoint para slack 
+# Pon aquí tu Bot User OAuth Token (xoxb-...)
+SLACK_BOT_TOKEN = "poner aqui tu token"
 
+SLACK_POST_MESSAGE_URL = "https://slack.com/api/chat.postMessage"
+
+@app.route('/slack-webhook', methods=['POST'])
+def slack_webhook():
+    data = request.get_json()
+
+    # Slack verifica la URL con un challenge
+    if data.get('type') == 'url_verification':
+        return jsonify({'challenge': data['challenge']})
+
+    # Evento recibido
+    if data.get('type') == 'event_callback':
+        event = data['event']
+        print("Nuevo evento de Slack:", event)
+
+        # Solo responder si es mensaje y NO es mensaje de bot (para evitar loops)
+        if event.get('type') == 'message' and not event.get('bot_id'):
+            user = event.get('user')
+            text = event.get('text')
+            channel = event.get('channel')
+
+            # Mensaje para responder
+            reply_text = f"Hola <@{user}>! Recibí tu mensaje: {text}"
+
+            # Enviar mensaje a Slack usando chat.postMessage
+            headers = {
+                "Authorization": f"Bearer {SLACK_BOT_TOKEN}",
+                "Content-Type": "application/json"
+            }
+            payload = {
+                "channel": channel,
+                "text": reply_text
+            }
+
+            response = requests.post(SLACK_POST_MESSAGE_URL, headers=headers, json=payload)
+            print("Respuesta de Slack API:", response.json())
+
+    return '', 200
 
 if __name__ == '__main__':
     app.run(port=5000)
