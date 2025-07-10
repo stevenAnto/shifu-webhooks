@@ -1,13 +1,13 @@
+# 🔔 Webhooks con Flask: Google Calendar, Gmail, Dropbox y Slack
 
-# 🔔 Webhooks con Flask: Google Calendar, Gmail y Dropbox
-
-Este proyecto implementa **tres webhooks en Flask** para escuchar cambios en:
+Este proyecto implementa **cuatro webhooks en Flask** para escuchar cambios en:
 
 - 📅 Google Calendar
-- 📥 Gmail(no agregado aun)
+- 📥 Gmail (no agregado aún)
 - 📁 Dropbox
+- 💬 Slack (solo para el workspace donde la app ha sido creada)
 
-Utiliza OAuth 2.0 para autenticación (para Google APIs) y acceso token para Dropbox.  
+Utiliza OAuth 2.0 para autenticación (para Google APIs) y tokens de acceso para Dropbox y Slack.  
 Los cambios se notifican en tiempo real a tu servidor Flask usando la funcionalidad de webhooks de cada plataforma.
 
 ---
@@ -107,15 +107,29 @@ Este webhook recibe cambios de cuentas vinculadas a tu app en Dropbox.
 
 ---
 
+## 💬 Slack Webhook
+
+Este webhook recibe eventos en tiempo real de Slack **solo para el workspace donde la app ha sido creada e instalada**.
+
+### ¿Qué hace?
+
+- Escucha eventos como mensajes en canales públicos o reacciones añadidas.
+- Recibe notificaciones vía HTTP POST en tu servidor Flask.
+- Permite a tu bot responder automáticamente mensajes usando el token de bot.
+- Solo recibe eventos del workspace donde la app está instalada (no es global).
+
+---
+
 ## 🚀 Uso
 
 Cada webhook expone una ruta:
 
 | Plataforma       | Endpoint             | Descripción                                 |
 |------------------|----------------------|---------------------------------------------|
-| Google Calendar | `/webhook-calendar`  | Recibe eventos creados o modificados       |
-| Gmail           | `/webhook-gmail`     | Recibe notificaciones vía Pub/Sub          |
-| Dropbox         | `/webhook-dropbox`   | Recibe notificaciones por cambios de archivos |
+| Google Calendar  | `/webhook-calendar`  | Recibe eventos creados o modificados       |
+| Gmail            | `/webhook-gmail`     | Recibe notificaciones vía Pub/Sub           |
+| Dropbox          | `/webhook-dropbox`   | Recibe notificaciones por cambios de archivos |
+| Slack            | `/slack-webhook`     | Recibe eventos y mensajes de Slack          |
 
 ---
 
@@ -128,6 +142,10 @@ Cada webhook expone una ruta:
 ### ▶️ Dropbox Webhook Paso a Paso
 [![Dropbox Webhook](https://img.youtube.com/vi/uzKjRO4pOfc/0.jpg)](https://youtu.be/uzKjRO4pOfc)  
 🔗 [Ver en YouTube](https://youtu.be/uzKjRO4pOfc)
+
+### ▶️ Slack Webhook Introducción y Configuración
+[![Slack Webhook](https://img.youtube.com/vi/-V7rQy6kGSQ/0.jpg)](https://youtu.be/-V7rQy6kGSQ)  
+🔗 [Ver en YouTube](https://youtu.be/-V7rQy6kGSQ)
 
 ---
 
@@ -154,6 +172,5 @@ __pycache__/
 ## 🪪 Licencia
 
 MIT License © 2025
-
 
 ---
