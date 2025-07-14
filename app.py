@@ -89,5 +89,14 @@ def slack_webhook():
 
     return '', 200
 
+
+#webhook ClickUp 
+@app.route('/webhook-clickup', methods=['POST'])
+def clickup_webhook():
+    data = request.json
+    print("Webhook recibido:")
+    print(data)
+    return jsonify({'status': 'received'}), 200
+
 if __name__ == '__main__':
     app.run(port=5000)
