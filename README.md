@@ -142,7 +142,7 @@ python app.py
 ngrok http 5000
 ```
 
-4. Edita el archivo `registro_webhook_clickup.py` y reemplaza `PUBLIC_URL` con la URL pública de ngrok.
+4. Edita el archivo `registro_webhook_clickup.py` y reemplaza `PUBLIC_URL` con la URL pública de ngrok. Hacer lo mismo con tema_id and space_id
 
 5. Ejecuta el registro del webhook:
 
