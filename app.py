@@ -271,5 +271,15 @@ def asana_webhook():
 
     return '', 200
 
+#webhook monday.com
+@app.route("/webhook-monday", methods=["POST"])
+def webhook_monday():
+    data = request.get_json()
+    print("🔔 Webhook de Monday recibido:")
+    print(data)
+    return jsonify(data), 200
+
+
+
 if __name__ == '__main__':
     app.run(port=5000)

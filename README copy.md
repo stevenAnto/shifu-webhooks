@@ -119,6 +119,7 @@ python asana/create_webhook.py
 | Slack            | `/slack-webhook`     | Recibe eventos y mensajes de Slack                  |
 | ClickUp          | `/webhook-clickup`   | Recibe eventos de tareas (creación, edición, etc.) |
 | Asana            | `/webhook-asana`     | Recibe eventos de proyectos y tareas en Asana      |
+| Monday            | `/webhook-monday`     | Recibe eventos a los que el usuario se ha suscrito desde su workspace |
 
 ---
 
