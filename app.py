@@ -255,5 +255,21 @@ def clickup_webhook():
     print(data)
     return jsonify({'status': 'received'}), 200
 
+#webhook asana
+@app.route('/webhook-asana', methods=['POST'])
+def asana_webhook():
+    # Verificación inicial del webhook
+    if 'X-Hook-Secret' in request.headers:
+        secret = request.headers['X-Hook-Secret']
+        print("Verificación recibida, respondiendo con X-Hook-Secret")
+        return '', 200, {'X-Hook-Secret': secret}
+
+    # Manejo de eventos reales
+    payload = request.get_json()
+    print("Evento recibido:")
+    print(payload)
+
+    return '', 200
+
 if __name__ == '__main__':
     app.run(port=5000)
