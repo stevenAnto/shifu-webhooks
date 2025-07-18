@@ -280,6 +280,27 @@ def webhook_monday():
     return jsonify(data), 200
 
 
+@app.route('/notion-webhook', methods=['POST'])
+def notion_webhook():
+    data = request.json
+    print(data)
+
+    # Caso 1: petición de verificación (Notion envía el verification_token para confirmar la suscripción)
+    if 'verification_token' in data:
+        print("Evento webhook recibido de Notion:")
+        print(data)
+        return jsonify({'verification_token': data['verification_token']})
+
+    # Caso 2: Validar la firma en eventos webhook normales
+    #if not validar_firma(request):
+     #   return 'Firma inválida', 401
+
+    # Procesa aquí el evento webhook recibido
+
+    # Responde OK para que Notion sepa que recibiste el evento correctamente
+    return '', 200
+
+
 
 if __name__ == '__main__':
     app.run(port=5000)
