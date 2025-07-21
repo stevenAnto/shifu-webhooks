@@ -9,6 +9,7 @@ Este proyecto implementa **seis webhooks en Flask** para escuchar cambios en:
 - 💬 Slack (solo para el workspace donde la app ha sido creada)  
 - ✅ ClickUp (eventos en tareas)
 - 📋 **Asana** (eventos en proyectos)
+- Monday.com 
 - ✅ Notion (eventos en pages and databases de un workspace determinado)
 - ✅ Jira (Cambios habilitados segun configuracion)
 
