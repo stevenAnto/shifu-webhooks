@@ -300,6 +300,13 @@ def notion_webhook():
     # Responde OK para que Notion sepa que recibiste el evento correctamente
     return '', 200
 
+@app.route('/webhook-jira', methods=['POST'])
+def jira_webhook():
+    data = request.json
+    print("🔔 Webhook recibido desde Jira:")
+    print(data)  # Aquí puedes guardar, procesar, enviar a otra API, etc.
+    return jsonify({'status': 'recibido'}), 200
+
 
 
 if __name__ == '__main__':

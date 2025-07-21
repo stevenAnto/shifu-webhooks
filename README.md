@@ -10,6 +10,7 @@ Este proyecto implementa **seis webhooks en Flask** para escuchar cambios en:
 - ✅ ClickUp (eventos en tareas)
 - 📋 **Asana** (eventos en proyectos)
 - ✅ Notion (eventos en pages and databases de un workspace determinado)
+- ✅ Jira (Cambios habilitados segun configuracion)
 
 
 Utiliza OAuth 2.0 para autenticación (para Google APIs) y tokens de acceso para Dropbox, Slack y ClickUp.  
@@ -302,6 +303,22 @@ ngrok http 5000
 4. En setting de la integracion agregar Acces (paginas y bases de datos de los cuales se quiere escuchar)
 
 
+## 📋 Jira Notion
+
+### Pasos para crear el webhook:
+0. Levantar el endpoint en una url publica
+
+1. Crea un proyecto en Jira.
+
+2. En settings  Sistema -> Webhoook registra la url y dar los permisos necesarios
+
+3. Hacer cambios a su proyecto
+
+NOTA De acuerdo a la documentacion https://developer.atlassian.com/server/jira/platform/webhooks/ , solo el adminstrador del proyecto puede
+
+agregar el webhook desde panel de administrador del mismo proyecto. Tal como se indico anteriormente
+
+
 
 ## 🎥 Video Tutoriales
 
@@ -341,6 +358,10 @@ ngrok http 5000
 [![Asana Webhook](https://img.youtube.com/vi/29fHsNAd1fQ/0.jpg)](https://youtu.be/_wRslFjjnIE)  
 🔗 [Ver en YouTube](https://youtu.be/_wRslFjjnIE)
 
+### ▶️ **Jira Webhook**  
+[![Asana Webhook](https://img.youtube.com/vi/29fHsNAd1fQ/0.jpg)](https://youtu.be/dIkosxgY3J8)  
+🔗 [Ver en YouTube](https://youtu.be/dIkosxgY3J8)
+
 
 ---
 
@@ -355,7 +376,8 @@ ngrok http 5000
 | Slack            | `/slack-webhook`     | Recibe eventos y mensajes de Slack                  |
 | ClickUp          | `/webhook-clickup`   | Recibe eventos de tareas (creación, edición, etc.) |
 | Asana            | `/webhook-asana`     | Recibe eventos de proyectos y tareas en Asana      |
-| Notion            | `/webhook-notion`     | Recibe eventos de paginas y Base dedatos accesados por la integracion|
+| Notion            | `/webhook-notion`   | Recibe eventos de paginas y Base dedatos accesados por la integracion|
+| Jira            | `/webhook-jira`       | Recibe notificaciones de eventos que se han habilitado|
 
 
 ---
