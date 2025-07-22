@@ -12,6 +12,7 @@ Este proyecto implementa **seis webhooks en Flask** para escuchar cambios en:
 - Monday.com 
 - ✅ Notion (eventos en pages and databases de un workspace determinado)
 - ✅ Jira (Cambios habilitados segun configuracion)
+- ✅ HubSpot (Notificacion de determinados cambios que se configuran en la app creada)
 
 
 Utiliza OAuth 2.0 para autenticación (para Google APIs) y tokens de acceso para Dropbox, Slack y ClickUp.  
@@ -283,8 +284,7 @@ python asana/create_webhook.py
 
 - el endpoint es  /webhook-monday
 
-- Funciona solo cuando el usuario registra la url publica en su workspace manualmente. Es decir, el usuario debe crearse un espacio 
- y registrar la url publica para recibir notificaciones
+- Funciona solo cuando el usuario registra la url publica en su workspace manualmente. Es decir, el usuario debe crearse un espacio  y registrar la url publica para recibir notificaciones
 
 
 ```bash
@@ -304,7 +304,7 @@ ngrok http 5000
 4. En setting de la integracion agregar Acces (paginas y bases de datos de los cuales se quiere escuchar)
 
 
-## 📋 Jira Notion
+## 📋 Jira 
 
 ### Pasos para crear el webhook:
 0. Levantar el endpoint en una url publica
@@ -314,6 +314,21 @@ ngrok http 5000
 2. En settings  Sistema -> Webhoook registra la url y dar los permisos necesarios
 
 3. Hacer cambios a su proyecto
+
+
+## 📋 HubSpot
+
+### Pasos para crear el webhook:
+0. Levantar el endpoint en una url publica. NOTA Cambiar credenciales de la app en HubSpot creado Linea 318 de app.py
+
+1. Crear una app con cuenta desarrollador en HubSpot,y agregar webHook la url target
+
+2. Agregar en setting la url de redireccion para la subscripcion de portal de CRM al app-webhook creada
+
+3. Agregar subscripciones en webhookk de la app
+
+4. Hacer cambio en tu portal de CRM HubSpot para verificar notifiacion de cambios
+
 
 NOTA De acuerdo a la documentacion https://developer.atlassian.com/server/jira/platform/webhooks/ , solo el adminstrador del proyecto puede
 
@@ -364,6 +379,11 @@ agregar el webhook desde panel de administrador del mismo proyecto. Tal como se 
 🔗 [Ver en YouTube](https://youtu.be/dIkosxgY3J8)
 
 
+### ▶️ **HubSpot Webhook**  
+[![Asana Webhook](https://img.youtube.com/vi/29fHsNAd1fQ/0.jpg)](https://youtu.be/Yjfx6MITjUM)  
+🔗 [Ver en YouTube](https://youtu.be/Yjfx6MITjUM)
+
+
 ---
 
 ## 🚀 Endpoints disponibles
@@ -379,6 +399,7 @@ agregar el webhook desde panel de administrador del mismo proyecto. Tal como se 
 | Asana            | `/webhook-asana`     | Recibe eventos de proyectos y tareas en Asana      |
 | Notion            | `/webhook-notion`   | Recibe eventos de paginas y Base dedatos accesados por la integracion|
 | Jira            | `/webhook-jira`       | Recibe notificaciones de eventos que se han habilitado|
+| Jira            | `/webhook-hubspot`       | Recibe notificaciones de eventos que se han habilitado en la creacion de la app |
 
 
 ---

@@ -1,7 +1,7 @@
 import base64
 import os
 from urllib.parse import parse_qs, urlparse
-from flask import Flask, Request, json, jsonify, request
+from flask import Flask, Request, json, jsonify, redirect, request
 import pickle
 from datetime import datetime, timedelta
 from googleapiclient.discovery import build
@@ -307,7 +307,57 @@ def jira_webhook():
     print(data)  # Aquí puedes guardar, procesar, enviar a otra API, etc.
     return jsonify({'status': 'recibido'}), 200
 
+@app.route("/webhook-hubspot", methods=["POST"])
+def hubspot_webhook():
+    data = request.json
+    print("Evento recibido de HubSpot:", data)
+    return "OK", 200
 
+#configurando webhook-HubSpot
+
+CLIENT_ID = 'tu_cliente_id'  # tu Client ID
+CLIENT_SECRET = 'tu_client_secret'             # tu Client Secret
+REDIRECT_URI = 'https://909523afe44d.ngrok-free.app/oauth/callback'  # la URL que registras en HubSpot
+
+# Paso 1: redirigir al usuario a HubSpot para autorización
+@app.route('/install')
+def install():
+    scopes = 'oauth crm.objects.companies.read crm.objects.contacts.read'
+    auth_url = (
+        'https://app.hubspot.com/oauth/authorize'
+        f'?client_id={CLIENT_ID}'
+        f'&redirect_uri={REDIRECT_URI}'
+        f'&scope={scopes}'
+    )
+    return redirect(auth_url)
+
+# Paso 2: HubSpot redirige aquí con ?code=...
+@app.route('/oauth/callback')
+def oauth_callback():
+    code = request.args.get('code')
+    if not code:
+        return "No authorization code provided", 400
+    
+    # Intercambiar el code por un token de acceso
+    token_url = 'https://api.hubapi.com/oauth/v1/token'
+    data = {
+        'grant_type': 'authorization_code',
+        'client_id': CLIENT_ID,
+        'client_secret': CLIENT_SECRET,
+        'redirect_uri': REDIRECT_URI,
+        'code': code
+    }
+    headers = {'Content-Type': 'application/x-www-form-urlencoded'}
+    response = requests.post(token_url, data=data, headers=headers)
+    if response.status_code != 200:
+        return f"Error getting token: {response.text}", 400
+    
+    token_info = response.json()
+    access_token = token_info.get('access_token')
+    
+    # Aquí guardas el access_token para hacer llamadas a la API de HubSpot con permisos del usuario
+    
+    return f"App connected! Access token: {access_token}"
 
 if __name__ == '__main__':
     app.run(port=5000)
