@@ -13,6 +13,7 @@ Este proyecto implementa **seis webhooks en Flask** para escuchar cambios en:
 - ✅ Notion (eventos en pages and databases de un workspace determinado)
 - ✅ Jira (Cambios habilitados segun configuracion)
 - ✅ HubSpot (Notificacion de determinados cambios que se configuran en la app creada)
+- ✅ OneDrive (Notificacion de OneDrive Cambios)
 
 
 Utiliza OAuth 2.0 para autenticación (para Google APIs) y tokens de acceso para Dropbox, Slack y ClickUp.  
@@ -39,6 +40,8 @@ Los cambios se notifican en tiempo real a tu servidor Flask usando la funcionali
 ├── token.pickle                   # Token de acceso Google (NO subir)
 ├── asana/
 │   └── create_webhook.py          # Script para crear webhook en Asana
+├── microsfot/
+│   └── tu_webhook.py          # script para hacer un ssucrpipcon a OneDrive
 ```
 
 ---
@@ -334,6 +337,17 @@ NOTA De acuerdo a la documentacion https://developer.atlassian.com/server/jira/p
 
 agregar el webhook desde panel de administrador del mismo proyecto. Tal como se indico anteriormente
 
+## 📋 OneDrive
+
+### Pasos para crear el webhook:
+0. Cambiar credenciales de aplicacion(Azure) en codigo de app.py Id_cliente y secret . Levanta en una url publicca app.py
+
+1. Cambiar el archivo tu_webhook.py con la url publica del webhook. Ejecutar el archivo tu_webhook.py
+
+2. Hacer cambios en OneDrive
+
+
+
 
 
 ## 🎥 Video Tutoriales
@@ -383,6 +397,9 @@ agregar el webhook desde panel de administrador del mismo proyecto. Tal como se 
 [![Asana Webhook](https://img.youtube.com/vi/29fHsNAd1fQ/0.jpg)](https://youtu.be/Yjfx6MITjUM)  
 🔗 [Ver en YouTube](https://youtu.be/Yjfx6MITjUM)
 
+### ▶️ **OneDrive Webhook**  
+[![Asana Webhook](https://img.youtube.com/vi/29fHsNAd1fQ/0.jpg)](https://youtu.be/VQQwACQ4-d8)  
+🔗 [Ver en YouTube](https://youtu.be/VQQwACQ4-d8)
 
 ---
 
@@ -397,9 +414,10 @@ agregar el webhook desde panel de administrador del mismo proyecto. Tal como se 
 | Slack            | `/slack-webhook`     | Recibe eventos y mensajes de Slack                  |
 | ClickUp          | `/webhook-clickup`   | Recibe eventos de tareas (creación, edición, etc.) |
 | Asana            | `/webhook-asana`     | Recibe eventos de proyectos y tareas en Asana      |
-| Notion            | `/webhook-notion`   | Recibe eventos de paginas y Base dedatos accesados por la integracion|
-| Jira            | `/webhook-jira`       | Recibe notificaciones de eventos que se han habilitado|
-| Jira            | `/webhook-hubspot`       | Recibe notificaciones de eventos que se han habilitado en la creacion de la app |
+| Notion           | `/webhook-notion`    | Recibe eventos de paginas y Base dedatos accesados por la integracion|
+| Jira             | `/webhook-jira`      | Recibe notificaciones de eventos que se han habilitado|
+| HubSpot          | `/webhook-hubspot`   | Recibe notificaciones de eventos que se han habilitado en la creacion de la app |
+| OneDrive         | `/webhook-oneDrive`  | Recibe notificaciones de cambios en OneDrive |
 
 
 ---

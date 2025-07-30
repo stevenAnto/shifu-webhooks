@@ -1,7 +1,7 @@
 import base64
 import os
 from urllib.parse import parse_qs, urlparse
-from flask import Flask, Request, json, jsonify, redirect, request
+from flask import Flask, Request, json, jsonify, make_response, redirect, request
 import pickle
 from datetime import datetime, timedelta
 from googleapiclient.discovery import build
@@ -307,6 +307,8 @@ def jira_webhook():
     print(data)  # Aquí puedes guardar, procesar, enviar a otra API, etc.
     return jsonify({'status': 'recibido'}), 200
 
+#Webhook hubspot
+
 @app.route("/webhook-hubspot", methods=["POST"])
 def hubspot_webhook():
     data = request.json
@@ -358,6 +360,90 @@ def oauth_callback():
     # Aquí guardas el access_token para hacer llamadas a la API de HubSpot con permisos del usuario
     
     return f"App connected! Access token: {access_token}"
+
+#Sales Force
+
+# OneDrive
+
+#Obtenemos tokens
+# Configuración de la app registrada en Azure
+CLIENT_ID = "Pone_id_de_aplicacion_azure"
+CLIENT_SECRET = "value of secret en azure"
+REDIRECT_URI = "http://localhost:5000/callback"
+AUTHORITY = "https://login.microsoftonline.com/common"
+SCOPE = "offline_access Files.Read.All User.Read"
+
+@app.route("/")
+def index():
+    return "<h2>🔐 Bienvenido. Visita <a href='/login'>/login</a> para iniciar sesión con Microsoft</h2>"
+
+# Ruta para iniciar el proceso de login
+@app.route("/login")
+def login():
+    auth_url = (
+        f"{AUTHORITY}/oauth2/v2.0/authorize"
+        f"?client_id={CLIENT_ID}"
+        f"&response_type=code"
+        f"&redirect_uri={REDIRECT_URI}"
+        f"&response_mode=query"
+        f"&scope={SCOPE}"
+    )
+    return redirect(auth_url)
+
+# Ruta de callback: recibe el code y solicita el access_token
+@app.route("/callback")
+def callback():
+    code = request.args.get("code")
+    token_url = f"{AUTHORITY}/oauth2/v2.0/token"
+    data = {
+        "client_id": CLIENT_ID,
+        "client_secret": CLIENT_SECRET,
+        "code": code,
+        "redirect_uri": REDIRECT_URI,
+        "grant_type": "authorization_code",
+        "scope": SCOPE
+    }
+
+    response = requests.post(token_url, data=data)
+    tokens = response.json()
+    print(tokens)
+
+    # Guardar los tokens en un archivo
+    with open("microsoft/tokens.json", "w") as f:
+        json.dump(tokens, f, indent=2)
+
+    return "✅ Tokens guardados en 'microsoft/tokens.json'"
+
+@app.route("/webhook-oneDrive", methods=["GET", "POST"])
+def webhook_onedrive():
+    # 1. Validación inicial (text/plain)
+    validation_token = request.args.get("validationToken")
+    if validation_token:
+        app.logger.info("✅ Validación exitosa")
+        return validation_token, 200, {"Content-Type": "text/plain"}
+
+    # 2. Notificaciones reales (POST)
+    if request.method == "POST":
+        content_type = request.headers.get("Content-Type", "").lower()
+        
+        # Cambio 1: Verificación flexible de Content-Type
+        if "application/json" in content_type:  
+            try:
+                data = request.get_json()
+                app.logger.info("🔔 Notificación recibida:\n%s", json.dumps(data, indent=2))
+                print(data)
+                
+                # Cambio 2: Devuelve headers compatibles
+                return "", 202, {"Content-Type": "text/plain"}
+                
+            except Exception as e:
+                app.logger.error("❌ Error JSON: %s", e)
+                return "Bad Request", 400
+        else:
+            app.logger.warning("⚠️ Content-Type no soportado: %s", content_type)
+            return "Unsupported Media Type", 415
+
+    return "", 404
 
 if __name__ == '__main__':
     app.run(port=5000)

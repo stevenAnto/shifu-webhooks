@@ -1,0 +1,18 @@
+{
+  "@odata.context": "https://graph.microsoft.com/v1.0/$metadata#subscriptions/$entity",
+  "id": "ec6fff42-7a73-43fe-8f1c-8fd91800f9fb",
+  "resource": "me/drive/root",
+  "applicationId": "c3761933-cdb6-4550-89c9-b0fbbc0cf348",
+  "changeType": "updated",
+  "clientState": "miEstadoSeguro123",
+  "notificationUrl": "https://988d3a68ef22.ngrok-free.app/webhook-oneDrive",
+  "notificationQueryOptions": null,
+  "lifecycleNotificationUrl": null,
+  "expirationDateTime": "2025-07-30T16:22:32.284Z",
+  "creatorId": "000340028C786ACA",
+  "includeResourceData": null,
+  "latestSupportedTlsVersion": "v1_2",
+  "encryptionCertificate": null,
+  "encryptionCertificateId": null,
+  "notificationUrlAppId": null
+}
