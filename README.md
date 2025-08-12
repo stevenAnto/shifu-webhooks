@@ -14,6 +14,7 @@ Este proyecto implementa **seis webhooks en Flask** para escuchar cambios en:
 - ✅ Jira (Cambios habilitados segun configuracion)
 - ✅ HubSpot (Notificacion de determinados cambios que se configuran en la app creada)
 - ✅ OneDrive (Notificacion de OneDrive Cambios)
+- ✅ Meta (Notificacion de OneDrive Cambios)
 
 
 Utiliza OAuth 2.0 para autenticación (para Google APIs) y tokens de acceso para Dropbox, Slack y ClickUp.  
@@ -42,6 +43,8 @@ Los cambios se notifican en tiempo real a tu servidor Flask usando la funcionali
 │   └── create_webhook.py          # Script para crear webhook en Asana
 ├── microsfot/
 │   └── tu_webhook.py          # script para hacer un ssucrpipcon a OneDrive
+├── meta/
+│   └── configuracion.py          # aun no funciona jejeje
 ```
 
 ---
@@ -348,6 +351,21 @@ agregar el webhook desde panel de administrador del mismo proyecto. Tal como se 
 
 
 
+## 📋 Meta
+
+### Pasos para crear el webhook:
+0. Crear tu app, y obtener un clave secreta de tu app y reemplazar en el endnpoint
+
+```bash
+VERIFY_TOKEN = "token para verificar la url del webhook"
+APP_SECRET = "tu clave" 
+```
+
+1. Levantar url, cambiar token y usar probadores
+
+
+
+
 
 
 ## 🎥 Video Tutoriales
@@ -401,6 +419,11 @@ agregar el webhook desde panel de administrador del mismo proyecto. Tal como se 
 [![Asana Webhook](https://img.youtube.com/vi/29fHsNAd1fQ/0.jpg)](https://youtu.be/VQQwACQ4-d8)  
 🔗 [Ver en YouTube](https://youtu.be/VQQwACQ4-d8)
 
+### ▶️ **Meta Webhook**  
+[![Asana Webhook](https://img.youtube.com/vi/29fHsNAd1fQ/0.jpg)](https://youtu.be/qQ-ZduzRGvw)  
+🔗 [Ver en YouTube](https://youtu.be/qQ-ZduzRGvw)
+
+
 ---
 
 ## 🚀 Endpoints disponibles
@@ -418,6 +441,7 @@ agregar el webhook desde panel de administrador del mismo proyecto. Tal como se 
 | Jira             | `/webhook-jira`      | Recibe notificaciones de eventos que se han habilitado|
 | HubSpot          | `/webhook-hubspot`   | Recibe notificaciones de eventos que se han habilitado en la creacion de la app |
 | OneDrive         | `/webhook-oneDrive`  | Recibe notificaciones de cambios en OneDrive |
+| Meta         | `/webhook-Meta`  | Recibe notificaciones de cambios en Meta(en desarrollo) |
 
 
 ---

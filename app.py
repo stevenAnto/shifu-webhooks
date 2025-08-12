@@ -1,4 +1,6 @@
 import base64
+import hashlib
+import hmac
 import os
 from urllib.parse import parse_qs, urlparse
 from flask import Flask, Request, json, jsonify, make_response, redirect, request
@@ -367,8 +369,8 @@ def oauth_callback():
 
 #Obtenemos tokens
 # Configuración de la app registrada en Azure
-CLIENT_ID = "Pone_id_de_aplicacion_azure"
-CLIENT_SECRET = "value of secret en azure"
+CLIENT_ID = "id"
+CLIENT_SECRET = "cliente"
 REDIRECT_URI = "http://localhost:5000/callback"
 AUTHORITY = "https://login.microsoftonline.com/common"
 SCOPE = "offline_access Files.Read.All User.Read"
@@ -431,7 +433,7 @@ def webhook_onedrive():
             try:
                 data = request.get_json()
                 app.logger.info("🔔 Notificación recibida:\n%s", json.dumps(data, indent=2))
-                print(data)
+                # print(data)
                 
                 # Cambio 2: Devuelve headers compatibles
                 return "", 202, {"Content-Type": "text/plain"}
@@ -444,6 +446,105 @@ def webhook_onedrive():
             return "Unsupported Media Type", 415
 
     return "", 404
+
+# webhook Meta
+
+#captura de permisos
+@app.route('/fb-auth-callback')
+def fb_auth_callback():
+    # Capturamos el código que envía Facebook después del login
+    code = request.args.get('code')
+    error = request.args.get('error')
+
+    if error:
+        return f"Error durante la autorización: {error}", 400
+
+    if not code:
+        return "No se recibió código de autorización.", 400
+
+    # Aquí puedes guardar el código para luego intercambiarlo por token
+    print(f"Código recibido: {code}")
+
+    return "Autorización recibida correctamente. Ahora puedes cerrar esta ventana."
+
+# Configuración (usa variables de entorno en producción)
+VERIFY_TOKEN = "mi_token_secreto"
+APP_SECRET = "clave_de_tu_app"  # Reemplaza con tu App Secret de Meta
+
+
+@app.route('/webhook-meta', methods=['GET', 'POST'])
+def webhook_meta():
+    if request.method == 'GET':
+        print("entro GET")
+        # Paso 1: Verificación del webhook (Meta envía GET al configurarlo)
+        mode = request.args.get('hub.mode')
+        token = request.args.get('hub.verify_tok')
+        challenge = request.args.get('hub.challenge')
+
+        if mode == 'subscribe' and token == VERIFY_TOKEN:
+            print("mode y toekn")
+            print("✅ Webhook verificado!")
+            return challenge, 200
+        else:
+            print("❌ Token de verificación incorrecto")
+            return "Verification failed", 403
+
+    elif request.method == 'POST':
+        # Debug: Mostrar headers y datos brutos recibidos
+        print("\n=== DEBUG INICIO ===")
+        print("Headers recibidos:")
+        for header, value in request.headers.items():
+            print(f"{header}: {value}")
+        
+        payload = request.data
+        print("\nPayload bruto:", payload.decode('utf-8'))
+        
+        try:
+            # Procesar el payload JSON
+            data = json.loads(payload)
+            print("\nJSON parseado:", json.dumps(data, indent=2))
+            
+            # Debug: Mostrar estructura completa del JSON
+            print("\nEstructura completa del payload:")
+            if data.get('object'):
+                print(f"Tipo de objeto: {data['object']}")
+                
+                for i, entry in enumerate(data.get('entry', []), 1):
+                    print(f"\nEntry #{i}:")
+                    print(f"ID: {entry.get('id')}")
+                    print(f"Time: {entry.get('time')}")
+                    
+                    for j, change in enumerate(entry.get('changes', []), 1):
+                        print(f"\nChange #{j}:")
+                        print(f"Campo: {change.get('field')}")
+                        print(f"Valor: {change.get('value')}")
+                        # Debug adicional para valores complejos
+                        if isinstance(change.get('value'), dict):
+                            print("Detalles del valor:")
+                            for k, v in change['value'].items():
+                                print(f"  {k}: {v}")
+
+            # Ejemplo: Manejar actualizaciones específicas
+            if data.get('object') == 'user':
+                print("\n--- Evento de usuario detectado ---")
+                for entry in data.get('entry', []):
+                    for change in entry.get('changes', []):
+                        if change.get('field') == 'photos':
+                            print(f"\n📸 Evento de foto detectado!")
+                            print(f"Acción: {change['value'].get('verb')}")
+                            print(f"ID de foto: {change['value'].get('object_id')}")
+                            
+        except json.JSONDecodeError as e:
+            print(f"\n❌ Error al parsear JSON: {e}")
+            return "Invalid JSON", 400
+        
+        print("\n=== DEBUG FIN ===")
+        
+        # Siempre responde 200 OK (Meta reintentará si fallas)
+        return "OK", 200
+
+
+
 
 if __name__ == '__main__':
     app.run(port=5000)
